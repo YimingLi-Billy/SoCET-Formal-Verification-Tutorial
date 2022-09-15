@@ -1,0 +1,10 @@
+// ***************************************************************************
+// Assume or Assert behavior at the output of the door controller
+// Note: Here we are showing one way to convert assumptions to assertions using a `define
+// ***************************************************************************
+`ifdef DOOR_CONTROLLER_IS_BBOXED
+  asm_door_controller_output_ready_to_move:     assume property (@(posedge clk) state==WAIT |-> ##[1:20] ready_to_move) else $display ("ERROR: ready_to_move failed to occur in the required time");
+`else
+  ast_door_controller_output_ready_to_move:     assert property (@(posedge clk) state==WAIT |-> ##[1:20] ready_to_move) else $display ("ERROR: ready_to_move failed to occur in the required time");
+`endif
+// ***************************************************************************

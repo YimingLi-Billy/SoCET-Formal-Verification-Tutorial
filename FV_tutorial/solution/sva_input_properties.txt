@@ -1,0 +1,10 @@
+// ***************************************************************************
+// Assume or Assert behavior at the input to the elevator controller
+// Note: We will convert these to assumptions in the TCL script, if necessary
+// ***************************************************************************
+ast_elevator_top_input_next_floor_up:           assert property (@(posedge clk) elevator_control==ELEV_MOTOR_UP    |=> current_floor==($past(current_floor) + 1'b1)) else $display ("ERROR: motor up and current floor not incrementing");
+ast_elevator_top_input_next_floor_down:         assert property (@(posedge clk) elevator_control==ELEV_MOTOR_DOWN  |=> current_floor==($past(current_floor) - 1'b1)) else $display ("ERROR: motor down and current floor not decrementing");
+ast_elevator_top_input_current_floor_behavior:  assert property (@(posedge clk) elevator_control== ELEV_MOTOR_STOP |=> $stable(current_floor)) else $display ("ERROR: current floor changed when motor was stopped");
+
+// ***************************************************************************
+

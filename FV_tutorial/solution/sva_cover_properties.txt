@@ -1,0 +1,45 @@
+// ***************************************************************************
+// Coverage (Reachability)
+// ***************************************************************************
+cov_elevator_top_fsm_WAIT:            cover property (@(posedge clk) state==WAIT);
+cov_elevator_top_fsm_ELEVATOR_UP:     cover property (@(posedge clk) state==ELEVATOR_UP);
+cov_elevator_top_fsm_ELEVATOR_DOWN:   cover property (@(posedge clk) state==ELEVATOR_DOWN);
+cov_elevator_top_fsm_WAIT_to_WAIT:    cover property (@(posedge clk) state==WAIT ##1 state==WAIT);
+cov_elevator_top_fsm_WAIT_to_UP:      cover property (@(posedge clk) state==WAIT ##1 state==ELEVATOR_UP);
+cov_elevator_top_fsm_WAIT_to_DOWN:    cover property (@(posedge clk) state==WAIT ##1 state==ELEVATOR_DOWN);
+cov_elevator_top_fsm_UP_to_WAIT:      cover property (@(posedge clk) state==ELEVATOR_UP ##1 state==WAIT);
+cov_elevator_top_fsm_UP_to_UP:        cover property (@(posedge clk) state==ELEVATOR_UP ##1 state==ELEVATOR_UP);
+cov_elevator_top_fsm_DOWN_to_WAIT:    cover property (@(posedge clk) state==ELEVATOR_DOWN ##1 state==WAIT);
+cov_elevator_top_fsm_DOWN_to_DOWN:    cover property (@(posedge clk) state==ELEVATOR_DOWN ##1 state==ELEVATOR_DOWN);
+
+cov_elevator_top_out_stop:            cover property (@(posedge clk) elevator_control==ELEV_MOTOR_STOP);
+cov_elevator_top_out_up:              cover property (@(posedge clk) elevator_control==ELEV_MOTOR_UP);
+cov_elevator_top_out_down:            cover property (@(posedge clk) elevator_control==ELEV_MOTOR_DOWN);
+
+cov_elevator_top_cfg_all_zero:        cover property (@(posedge clk) cfg_rd_data==4'b0000);
+cov_elevator_top_cfg_all_ones:        cover property (@(posedge clk) cfg_rd_data==4'b1111);
+// ***************************************************************************
+
+
+// ***************************************************************************
+// Coverage (Functional Sequences)
+// ***************************************************************************
+cov_elevator_top_up_down_up_down:     cover property (@(posedge clk) state==ELEVATOR_UP   ##[1:$] 
+                                                                     state==ELEVATOR_DOWN ##[1:$] 
+                                                                     state==ELEVATOR_UP   ##[1:$] 
+                                                                     state==ELEVATOR_DOWN);
+
+// This cover shows requests coming in while we are going up. So we have to stop along the way to the highest floor
+cov_elevator_top_up_wait_up_wait_down:cover property (@(posedge clk) state==ELEVATOR_UP ##5 
+                                                                     state==WAIT        ##6 
+                                                                     state==ELEVATOR_UP ##3 
+                                                                     state==WAIT        ##[1:$] 
+                                                                     state==ELEVATOR_DOWN);
+
+// This cover shows the upper floor being re-programmed as we are going up
+cov_elevator_top_up_cfg_up_cfg_down:  cover property (@(posedge clk) state==ELEVATOR_UP ##[10:$] 
+                                                                     ~$stable(cfg_reg_top_floor) ##[1:$] 
+                                                                     state==ELEVATOR_UP ##[1:$] 
+                                                                     ~$stable(cfg_reg_top_floor) ##[1:$] 
+                                                                     state==ELEVATOR_DOWN);
+// ***************************************************************************

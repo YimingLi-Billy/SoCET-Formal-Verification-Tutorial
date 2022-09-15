@@ -1,0 +1,5 @@
+// ***************************************************************************
+// Assert correct behavior of the elevator controller
+// ***************************************************************************
+ast_elevator_top_stop_at_next_floor_down:       assert property (@(posedge clk) state==ELEVATOR_DOWN && floor_to_stop_at[current_floor-1] |=> state==WAIT) else $display ("ERROR: did not stop at floor correctly when going down");
+ast_elevator_top_stop_at_next_floor_up:         assert property (@(posedge clk) state==ELEVATOR_UP   && floor_to_stop_at[current_floor+1] |=> state==WAIT) else $display ("ERROR: did not stop at floor correctly when going up");
